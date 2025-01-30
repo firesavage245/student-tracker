@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Schedule Tracker</title>
+</head>
+<body>
+    <h1>Student Schedule Tracker</h1>
+    <label for="studentSelect">Select Student:</label>
+    <select id="studentSelect" onchange="displaySchedule()">
+        <option value="zacharias">Zacharias</option>
+        <option value="mattatha">Mattatha</option>
+        <option value="hadassah">Hadassah</option>
+    </select>
+    
+    <h2>Schedule</h2>
+    <div id="scheduleDisplay"></div>
+    
+    <h2>Progress</h2>
+    <div id="progressDisplay"></div>
+    
+    <h2>Last Submission</h2>
+    <div id="submissionDisplay"></div>
+    
+    <h3>Update Progress & Submission</h3>
+    <label for="subjectInput">Subject:</label>
+    <input type="text" id="subjectInput" placeholder="Enter subject">
+    <label for="progressInput">Progress (%):</label>
+    <input type="number" id="progressInput" min="0" max="100">
+    <button onclick="updateProgressUI()">Update Progress</button>
+    
+    <script>
+        const students = {
+            zacharias: {
+                schedule: {
+                    Sunday: ['LA', 'Science'],
+                    Monday: ['Math', 'Keyboarding'],
+                    Tuesday: ['LA', 'Science'],
+                    Wednesday: ['Math', 'Keyboarding'],
+                    Thursday: ['LA', 'Science'],
+                    Friday: ['Math', 'Keyboarding']
+                },
+                progress: {
+                    Keyboarding: 85,
+                    Math: 14,
+                    Science: 26,
+                    LA: 85
+                },
+                lastSubmission: {}
+            },
+            mattatha: {
+                schedule: {
+                    Sunday: ['Algebra'],
+                    Monday: ['Biology'],
+                    Tuesday: ['Algebra'],
+                    Wednesday: ['Biology'],
+                    Thursday: ['English'],
+                    Friday: ['English']
+                },
+                progress: {
+                    Algebra: 37,
+                    Biology: 56,
+                    English: 60
+                },
+                lastSubmission: {}
+            },
+            hadassah: {
+                schedule: {
+                    Sunday: ['Civics', 'Science'],
+                    Monday: ['Pre-Algebra'],
+                    Tuesday: ['Civics', 'Science'],
+                    Wednesday: ['Pre-Algebra'],
+                    Thursday: ['English'],
+                    Friday: ['English']
+                },
+                progress: {
+                    Civics: 50,
+                    'Pre-Algebra': 3,
+                    English: 20,
+                    'Physical Science': 54
+                },
+                lastSubmission: {}
+            }
+        };
+
+        function displaySchedule() {
+            const student = document.getElementById("studentSelect").value;
+            const scheduleDiv = document.getElementById("scheduleDisplay");
+            const progressDiv = document.getElementById("progressDisplay");
+            const submissionDiv = document.getElementById("submissionDisplay");
+            scheduleDiv.innerHTML = "";
+            progressDiv.innerHTML = "";
+            submissionDiv.innerHTML = "";
+
+            for (const [day, subjects] of Object.entries(students[student].schedule)) {
+                scheduleDiv.innerHTML += `<p><strong>${day}:</strong> ${subjects.join(", ")}</p>`;
+            }
+            for (const [subject, percent] of Object.entries(students[student].progress)) {
+                progressDiv.innerHTML += `<p>${subject}: ${percent}%</p>`;
+            }
+            for (const [subject, date] of Object.entries(students[student].lastSubmission)) {
+                submissionDiv.innerHTML += `<p>${subject}: Last submitted on ${date}</p>`;
+            }
+        }
+
+        function updateProgressUI() {
+            const student = document.getElementById("studentSelect").value;
+            const subject = document.getElementById("subjectInput").value;
+            const newProgress = parseInt(document.getElementById("progressInput").value);
+            const date = new Date().toLocaleDateString();
+            
+            if (students[student].progress.hasOwnProperty(subject)) {
+                students[student].progress[subject] = newProgress;
+                students[student].lastSubmission[subject] = date;
+                displaySchedule(); // Refresh UI
+                alert(`Updated progress for ${subject} to ${newProgress}% and submission date to ${date}`);
+            } else {
+                alert(`Subject ${subject} not found for ${student}.`);
+            }
+        }
+    </script>
+</body>
+</html>
